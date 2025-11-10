@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      # PLAINTEXT для внутреннего использования (открыт на хосте)
+      - "9092:9092"
+      # EXTERNAL для внешнего использования (на уникальном порту)
+      - "9094:9094"
+    environment:
+      KAFKA_KRAFT_MODE: "true"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094"
+      KAFKA_LISTENERS: "CONTROLLER://0.0.0.0:9093,PLAINTEXT://0.0.0.0:9092,EXTERNAL://0.0.0.0:9094"
+      KAFKA_CONTROLLER_LISTENERS: "CONTROLLER://0.0.0.0:9093"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
+      KAFKA_BROKER_ID: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      CLUSTER_ID: "V123abcD456eF789gH012i"
+
+  # НОВЫЙ СЕРВИС: ПОТРЕБИТЕЛЬ для тестов
+  kafka-consumer:
+    image: confluentinc/cp-kafka:7.5.0 # Используем тот же образ с утилитами Kafka
+    container_name: kafka-consumer
+    command:
+      [
+        "sh",
+        "-c",
+        "sleep 10 && kafka-console-consumer --bootstrap-server kafka:9092 --topic user-events --from-beginning --property print.timestamp=true"
+      ]
+    depends_on:
+      - kafka
+    environment:
+      # Необходимо, чтобы потребитель не пытался запуститься как брокер/контроллер
+      KAFKA_KRAFT_MODE: "false"
