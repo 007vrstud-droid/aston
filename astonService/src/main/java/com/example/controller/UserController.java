@@ -4,18 +4,18 @@ import com.example.api.UserApi;
 import com.example.dto.UserCreateRequest;
 import com.example.dto.UserEvent;
 import com.example.dto.UserResponse;
+import com.example.dto.UserResponseLinksValue;
 import com.example.dto.UserUpdateRequest;
 import com.example.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
 public class UserController implements UserApi {
 
     private final UserService userService;
@@ -42,13 +42,27 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<UserResponse> users = userService.getAllUsers();
+
+        // Добавляем HATEOAS ссылки вручную
+        users.forEach(user -> user.setLinks(Map.of(
+                "self", new UserResponseLinksValue().href("/users/" + user.getId()),
+                "all", new UserResponseLinksValue().href("/users")
+        )));
+
         return ResponseEntity.ok(users);
     }
 
     @Override
     public ResponseEntity<UserResponse> getUser(Long id) {
         return userService.getUserById(id)
-                .map(ResponseEntity::ok)
+                .map(user -> {
+                    // Добавляем HATEOAS ссылки
+                    user.setLinks(Map.of(
+                            "self", new UserResponseLinksValue().href("/users/" + user.getId()),
+                            "all", new UserResponseLinksValue().href("/users")
+                    ));
+                    return ResponseEntity.ok(user);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 }
