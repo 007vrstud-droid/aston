@@ -12,7 +12,8 @@
 	<modules>
 		<module>astonService</module>
 		<module>astonKafka</module>
-	</modules>
+        <module>astonGateway</module>
+    </modules>
 
 	<dependencyManagement>
 		<dependencies>
