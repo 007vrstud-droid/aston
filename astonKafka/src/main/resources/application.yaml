@@ -1,42 +1,7 @@
-server:
-  port: 8082
 spring:
   application:
-    name: ASTON-KAFKA
-
-  main:
-    banner-mode: off
-
-  kafka:
-    bootstrap-servers: localhost:9094
-    consumer:
-      group-id: notification-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted-packages: "*"
-        spring.json.value.default.type: com.example.dto.UserEvent
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: 007vrstud@gmail.com
-    password: eftrokjsdcmvfapf
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-
-
-
-  autoconfigure:
-    exclude:
-      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
-      - org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration
-
-logging:
-  level:
-    root: INFO
-    org.springframework.kafka: INFO
-    org.apache.kafka: WARN
-    kafka: WARN
+    name: aston-kafka
+  profiles:
+    active: default
+  config:
+    import: optional:configserver:http://localhost:8881

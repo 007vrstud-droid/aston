@@ -1,13 +1,7 @@
-server:
-  port: 8761
-
-eureka:
-  client:
-    register-with-eureka: false  # сам сервер не регистрируется
-    fetch-registry: false         # не нужно ничего получать
-  instance:
-    hostname: localhost
-
 spring:
-  main:
-    banner-mode: off
+  application:
+    name: aston-eureka
+  profiles:
+    active: default
+  config:
+    import: optional:configserver:http://localhost:8881
