@@ -1,7 +1,9 @@
 server:
   port: 8088
-
 spring:
+  application:
+    name: ASTON-GATEWAY
+
   main:
     banner-mode: off
   cloud:
@@ -11,17 +13,28 @@ spring:
     gateway:
       routes:
         - id: astonService
-          uri: http://localhost:8081
+          uri: lb://ASTON-SERVICE
           predicates:
             - Path=/users/**
           filters:
             - name: RequestRateLimiter
               args:
-                redis-rate-limiter.replenishRate: 5     # 5 запросов в секунду
-                redis-rate-limiter.burstCapacity: 10    # максимум 10 запросов подряд
-                key-resolver: "#{@ipKeyResolver}"       # ограничение по IP-адресу
+                redis-rate-limiter.replenishRate: 5
+                redis-rate-limiter.burstCapacity: 10
+                key-resolver: "#{@ipKeyResolver}"
 
         - id: astonKafka
-          uri: http://localhost:8082
+          uri: lb://ASTON-KAFKA
           predicates:
             - Path=/notifications/**
+
+    discovery:
+      locator:
+        enabled: false   # true, если хочешь, чтобы Gateway сам создавал маршруты для всех сервисов автоматически
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true

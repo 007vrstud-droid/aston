@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: astonKafka
+    name: ASTON-SERVICE
 
   main:
     banner-mode: off
