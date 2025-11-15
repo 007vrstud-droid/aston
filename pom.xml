@@ -14,6 +14,7 @@
 		<module>astonKafka</module>
         <module>astonGateway</module>
         <module>astonEureka</module>
+        <module>AstonExternalConfiguration</module>
     </modules>
 
 	<dependencyManagement>
