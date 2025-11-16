@@ -155,6 +155,35 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.5.0</version>
             </plugin>
+                    <!-- Дополнительный плагин для явного указания главного класса в манифесте -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <configuration>
+                            <archive>
+                                <manifestEntries>
+                                    <Main-Class>com.example.UserCommandService</Main-Class>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <fork>true</fork>
+                            <mainClass>com.example.UserCommandService</mainClass>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+
         </plugins>
     </build>
     <dependencyManagement>

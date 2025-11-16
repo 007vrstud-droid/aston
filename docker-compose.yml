@@ -1,0 +1,117 @@
+version: '3.3'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    environment:
+      POSTGRES_DB: aston
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    networks:
+      - aston-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - aston-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT
+      KAFKA_LISTENER_PORT: 9092
+      KAFKA_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    networks:
+      - aston-network
+
+  config-server:
+    build: ./AstonExternalConfiguration
+    container_name: config-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    ports:
+      - "8881:8881"
+    networks:
+      - aston-network
+
+  eureka-server:
+    build: ./astonEureka
+    container_name: eureka-server
+    depends_on:
+      - config-server
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8881
+    ports:
+      - "8761:8761"
+    networks:
+      - aston-network
+
+  gateway:
+    build: ./astonGateway
+    container_name: gateway
+    depends_on:
+      - eureka-server
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8881
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+
+    ports:
+      - "8088:8088"
+    networks:
+      - aston-network
+
+  aston-service:
+    build: ./astonService
+    container_name: aston-service
+    depends_on:
+      - postgres
+      - kafka
+      - eureka-server
+      - config-server
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/aston
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8881
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    ports:
+      - "8081:8081"
+    networks:
+      - aston-network
+
+  aston-kafka:
+    build: ./astonKafka
+    container_name: aston-kafka
+    depends_on:
+      - kafka
+      - eureka-server
+      - config-server
+    environment:
+      - SPRING_CLOUD_CONFIG_URI=http://config-server:8881
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    ports:
+      - "8082:8082"
+    networks:
+      - aston-network
+
+networks:
+  aston-network:
+    driver: bridge
