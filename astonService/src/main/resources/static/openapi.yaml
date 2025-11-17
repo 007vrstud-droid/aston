@@ -237,3 +237,10 @@ components:
             - UPDATED
             - DELETED
           description: Тип события (создание, обновление или удаление пользователя).
+        _links:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              href:
+                type: string
