@@ -1,0 +1,69 @@
+openapi: 3.0.3
+info:
+  title: Notification API
+  version: 1.0.0
+paths:
+  /api/notifications/send:
+    post:
+      operationId: sendEmail
+      summary: Отправить письмо пользователю
+      description: Позволяет вручную отправить письмо пользователю с указанным email, темой и текстом.
+      tags:
+        - notification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendEmailRequest'
+      responses:
+        '200':
+          description: Письмо успешно отправлено.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Письмо отправлено на user@example.com"
+        '400':
+          description: Неверные параметры запроса.
+
+components:
+  schemas:
+    SendEmailRequest:
+      type: object
+      required:
+        - email
+        - subject
+        - text
+      properties:
+        email:
+          type: string
+          format: email
+          description: Адрес электронной почты получателя.
+        subject:
+          type: string
+          description: Тема письма.
+        text:
+          type: string
+          description: Текст письма.
+
+    UserEvent:
+      type: object
+      required:
+        - email
+        - eventType
+      properties:
+        email:
+          type: string
+          format: email
+          description: Адрес электронной почты пользователя.
+        eventType:
+          type: string
+          enum:
+            - CREATED
+            - UPDATED
+            - DELETED
+          description: Тип события (создание, обновление, удаление).
