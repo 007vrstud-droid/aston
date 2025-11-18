@@ -1,0 +1,18 @@
+server:
+  port: 8881  # порт Config Server
+
+spring:
+  main:
+    banner-mode: off
+  application:
+    name: astonConfigRepo
+
+  cloud:
+    config:
+      server:
+        git:
+
+          uri: https://github.com/007vrstud-droid/AstonConfigServerApp1.git
+          search-paths: config-repo/config # Указание пути к папке config, где находятся YAML файлы
+          default-label: AstonConfigServerApp
+          clone-on-start: true

@@ -12,7 +12,10 @@
 	<modules>
 		<module>astonService</module>
 		<module>astonKafka</module>
-	</modules>
+        <module>astonGateway</module>
+        <module>astonEureka</module>
+        <module>AstonExternalConfiguration</module>
+    </modules>
 
 	<dependencyManagement>
 		<dependencies>

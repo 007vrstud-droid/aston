@@ -1,6 +1,6 @@
 package integrationTest;
 
-import com.example.Main;
+import com.example.UserCommandService;
 import com.example.dto.UserCreateRequest;
 import com.example.dto.UserResponse;
 import com.example.dto.UserUpdateRequest;
@@ -23,7 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest(classes = Main.class)
+@SpringBootTest(classes = UserCommandService.class)
 @Testcontainers
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 class UserServiceIntegrationTest {

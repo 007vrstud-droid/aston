@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  aston-gateway:
+    image: eclipse-temurin:17-jdk
+    container_name: aston-gateway
+    ports:
+      - "8089:8088"
+    volumes:
+      - ../astonGateway/target/aston-gateway.jar:/app/app.jar
+    command: [ "java", "-jar", "/app/app.jar" ]
+    depends_on:
+      - redis

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: aston-service
+    name: aston-gateway
   profiles:
     active: default
   config:
