@@ -16,6 +16,7 @@ public class GlobalExceptionHandler {
         log.error("Произошла ошибка: ", ex);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Error-Message", ex.getMessage());
+
         return new ResponseEntity<>("Произошла ошибка на сервере", headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

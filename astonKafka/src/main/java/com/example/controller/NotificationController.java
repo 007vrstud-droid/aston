@@ -27,6 +27,7 @@ public class NotificationController implements NotificationApi {
         SendEmail200Response response = new SendEmail200Response()
                 .message("Письмо отправлено на " + request.getEmail());
         log.info("Ответ отправлен: {}", response.getMessage());
+
         return ResponseEntity.ok(response);
     }
 }

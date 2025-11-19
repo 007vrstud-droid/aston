@@ -17,7 +17,7 @@ public class UserEventListener {
     @KafkaListener(topics = "user-events", groupId = "notification-group", containerFactory = "kafkaListenerContainerFactory")
     public void handleUserEvent(UserEvent event) {
         log.info("Получено событие из Kafka: {}", event);
-        // Временная замена отправки email на логирование
+        //TODO: Временная замена отправки email на логирование
 //        switch (event.getEventType()) {
 //            case CREATED -> log.info("Событие CREATED для {}", event.getEmail());
 //            case DELETED -> log.info("Событие DELETED для {}", event.getEmail());
