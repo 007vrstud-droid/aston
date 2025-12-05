@@ -2,6 +2,7 @@ openapi: 3.0.3
 info:
   title: User API
   version: 1.0.0
+  description: Manually created spec
 paths:
   /users:
     get:
@@ -124,7 +125,7 @@ paths:
     post:
       operationId: sendUserEvent
       summary: Отправить событие пользователя в Kafka
-      description: Позволяет публиковать событие (создание, обновление, удаление) пользователя
+      description: Позволяет публиковать событие (создание, обновление, удаление) пользователя.
       tags:
         - user
       requestBody:
@@ -135,9 +136,9 @@ paths:
               $ref: '#/components/schemas/UserEvent'
       responses:
         '200':
-          description: Событие успешно отправлено
+          description: Событие успешно отправлено.
         '400':
-          description: Неверные данные события
+          description: Неверные данные события.
 
 components:
   schemas:
@@ -209,6 +210,15 @@ components:
           type: string
           format: date-time
           description: Дата и время создания пользователя.
+        _links:
+          type: object
+          description: HATEOAS ссылки для навигации по API.
+          additionalProperties:
+            type: object
+            properties:
+              href:
+                type: string
+                description: URL ссылки.
 
     UserEvent:
       type: object
@@ -219,11 +229,18 @@ components:
         email:
           type: string
           format: email
-          description: Адрес электронной почты пользователя
+          description: Адрес электронной почты пользователя.
         eventType:
           type: string
           enum:
             - CREATED
             - UPDATED
             - DELETED
-          description: Тип события (создание, обновление или удаление пользователя)
+          description: Тип события (создание, обновление или удаление пользователя).
+        _links:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              href:
+                type: string
