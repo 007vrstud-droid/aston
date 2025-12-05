@@ -1,11 +1,10 @@
 spring:
   application:
-    name: aston-service
+    name: aston-gateway
   profiles:
     active: default
   config:
-    import: "optional:configserver:http://config-server:8881"
-
+    import: optional:configserver:http://config-server:8881
 eureka:
   client:
     serviceUrl:

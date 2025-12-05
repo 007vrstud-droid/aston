@@ -1,0 +1,21 @@
+# Используем официальный образ с JDK 17 и Alpine Linux (легковесный)
+FROM eclipse-temurin:17-jdk-alpine
+
+# Рабочая директория внутри контейнера
+WORKDIR /app
+
+# Копируем pom.xml и src для сборки
+COPY pom.xml .
+COPY src ./src
+
+# Устанавливаем maven и собираем проект
+RUN apk add --no-cache maven && mvn clean package -DskipTests
+
+# Копируем готовый jar из target
+COPY target/*.jar app.jar
+
+# Открываем порт 8088 (тот, который используешь)
+EXPOSE 8088
+
+# Запускаем приложение
+ENTRYPOINT ["java", "-jar", "app.jar"]
